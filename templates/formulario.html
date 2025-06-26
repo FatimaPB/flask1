@@ -3,27 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Clasificador de Insectos</title>
+  <title>Predicción de Precio de Miel</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #ffe6f0, #fff0f5);
-      color: #5c2a5d;
+      background: linear-gradient(to right, #fff5e1, #fff0cc);
+      color: #5a3e1b;
       padding: 20px;
     }
 
     h1 {
       text-align: center;
-      color: #c94f7c;
+      color: #d18e00;
       font-size: 2em;
       margin-bottom: 30px;
     }
 
     form {
-      background-color: #fff0fa;
-      border: 2px solid #ffb6c1;
+      background-color: #fffdf5;
+      border: 2px solid #f2c879;
       border-radius: 15px;
-      max-width: 400px;
+      max-width: 500px;
       margin: 0 auto;
       padding: 25px;
       box-shadow: 0 8px 16px rgba(0,0,0,0.1);
@@ -35,17 +35,17 @@
       font-weight: bold;
     }
 
-    input[type="text"] {
+    input[type="text"], select {
       width: 100%;
       padding: 10px;
-      border: 1px solid #e0a9b0;
+      border: 1px solid #d1b77b;
       border-radius: 8px;
       margin-top: 5px;
-      background-color: #fff9fb;
+      background-color: #fffdf9;
     }
 
     input[type="submit"] {
-      background-color: #ff69b4;
+      background-color: #f4a300;
       color: white;
       border: none;
       padding: 12px 20px;
@@ -58,36 +58,46 @@
     }
 
     input[type="submit"]:hover {
-      background-color: #ff85c1;
+      background-color: #ffc14d;
     }
 
     #resultado {
       text-align: center;
       font-size: 1.2em;
       margin-top: 25px;
-      color: #8a2c65;
+      color: #a86400;
+    }
+
+    .descripcion {
+      font-size: 0.85em;
+      color: #6c4d23;
+      margin-bottom: 10px;
     }
   </style>
   <script>
-    function clasificarInsecto(event) {
+    function predecirPrecio(event) {
       event.preventDefault();
-      const abdomen = document.getElementById('abdomen').value;
-      const antena = document.getElementById('antena').value;
+      const datos = {
+        Purity: document.getElementById('Purity').value,
+        pH: document.getElementById('pH').value,
+        Pollen_analysis: document.getElementById('Pollen_analysis').value,
+        Density: document.getElementById('Density').value,
+        CS: document.getElementById('CS').value,
+        WC: document.getElementById('WC').value
+      };
+
+      const body = new URLSearchParams(datos).toString();
 
       fetch('/predict', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `abdomen=${abdomen}&antena=${antena}`,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body,
       })
       .then(response => response.json())
       .then(data => {
-        if (data.error) {
-          document.getElementById('resultado').innerText = 'Error: ' + data.error;
-        } else {
-          document.getElementById('resultado').innerText = 'El insecto es un/a: ' + data.categoria;
-        }
+        document.getElementById('resultado').innerText = data.error
+          ? 'Error: ' + data.error
+          : 'El precio estimado de la miel es: $' + data.precio;
       })
       .catch(error => {
         document.getElementById('resultado').innerText = 'Error en la solicitud.';
@@ -98,16 +108,54 @@
 </head>
 <body>
 
-  <h1>Clasificador de Insectos</h1>
+  <h1>Predicción de Precio de Miel</h1>
 
-  <form id="formulario" onsubmit="clasificarInsecto(event)">
-    <label for="abdomen">Longitud del Abdomen:</label>
-    <input type="text" id="abdomen" name="abdomen">
+  <form id="formulario" onsubmit="predecirPrecio(event)">
+    <label for="Purity">Pureza:</label>
+    <input type="text" id="Purity" name="Purity">
+    <div class="descripcion">Oscila entre 0.01 y 1.00. Representa la calidad de la muestra.</div>
 
-    <label for="antena">Longitud de las Antenas:</label>
-    <input type="text" id="antena" name="antena">
+    <label for="pH">pH:</label>
+    <input type="text" id="pH" name="pH">
+    <div class="descripcion">Nivel de acidez. Oscila entre 2.5 y 7.5.</div>
 
-    <input type="submit" value="Enviar">
+    <label for="Pollen_analysis">Análisis de polen:</label>
+    <select id="Pollen_analysis" name="Pollen_analysis">
+      <option value="trébol">Trébol</option>
+      <option value="flores silvestres">Flores silvestres</option>
+      <option value="azahar">Azahar</option>
+      <option value="alfalfa">Alfalfa</option>
+      <option value="acacia">Acacia</option>
+      <option value="lavanda">Lavanda</option>
+      <option value="eucalipto">Eucalipto</option>
+      <option value="trigo sarraceno">Trigo sarraceno</option>
+      <option value="manuka">Manuka</option>
+      <option value="salvia">Salvia</option>
+      <option value="girasol">Girasol</option>
+      <option value="borraja">Borraja</option>
+      <option value="romero">Romero</option>
+      <option value="tomillo">Tomillo</option>
+      <option value="brezo">Brezo</option>
+      <option value="tupelo">Tupelo</option>
+      <option value="arándano">Arándano</option>
+      <option value="castaño">Castaño</option>
+      <option value="aguacate">Aguacate</option>
+    </select>
+    <div class="descripcion">Origen floral de la miel.</div>
+
+    <label for="Density">Densidad:</label>
+    <input type="text" id="Density" name="Density">
+    <div class="descripcion">Oscila entre 1.21 y 1.86 g/cm³.</div>
+
+    <label for="CS">Puntuación de color (CS):</label>
+    <input type="text" id="CS" name="CS">
+    <div class="descripcion">Rango de 1.0 (claro) a 10.0 (oscuro).</div>
+
+    <label for="WC">Contenido de agua (WC):</label>
+    <input type="text" id="WC" name="WC">
+    <div class="descripcion">Oscila entre 12.0% y 25.0%.</div>
+
+    <input type="submit" value="Predecir Precio">
   </form>
 
   <p id="resultado"></p>

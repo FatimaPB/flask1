@@ -4,12 +4,9 @@ import pandas as pd
 import logging
 
 app = Flask(__name__)
-
-# Configurar el registro
 logging.basicConfig(level=logging.DEBUG)
 
-# Cargar el modelo entrenado
-model = joblib.load('modelo.pkl')
+model = joblib.load('modelo_red_neuronal.pkl')  # Asegúrate de tener tu modelo entrenado para precio
 app.logger.debug('Modelo cargado correctamente.')
 
 @app.route('/')
@@ -19,20 +16,25 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Obtener los datos enviados en el request
-        abdomen = float(request.form['abdomen'])
-        antena = float(request.form['antena'])
+        features = {
+            'CS': float(request.form['CS']),
+            'Density': float(request.form['Density']),
+            'WC': float(request.form['WC']),
+            'pH': float(request.form['pH']),
+            'Pollen_analysis': request.form['Pollen_analysis'],
+            'Purity': float(request.form['Purity']),
+        }
 
-        # Crear un DataFrame con los datos
-        data_df = pd.DataFrame([[abdomen, antena]], columns=['abdomen', 'antena'])
-        app.logger.debug(f'DataFrame creado: {data_df}')
+        # Convertir a DataFrame. Se recomienda tener el mismo orden de columnas usado en entrenamiento
+        data_df = pd.DataFrame([features])
+        app.logger.debug(f'Datos recibidos: {data_df}')
 
-        # Realizar predicciones
+        # Asegúrate de codificar correctamente la columna categórica 'Pollen_analysis' si el modelo lo necesita
+
         prediction = model.predict(data_df)
         app.logger.debug(f'Predicción: {prediction[0]}')
 
-        # Devolver las predicciones como respuesta JSON
-        return jsonify({'categoria': prediction[0]})
+        return jsonify({'precio': round(float(prediction[0]), 2)})
     except Exception as e:
         app.logger.error(f'Error en la predicción: {str(e)}')
         return jsonify({'error': str(e)}), 400
