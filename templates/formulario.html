@@ -2,164 +2,181 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Predicción de Precio de Miel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Predicción Titanic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #fff5e1, #fff0cc);
-      color: #5a3e1b;
-      padding: 20px;
+    .fondo-difuminado {
+      background-color: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
-    h1 {
-      text-align: center;
-      color: #d18e00;
-      font-size: 2em;
-      margin-bottom: 30px;
+    .glass-card {
+      background-color: rgba(255, 240, 250, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
 
-    form {
-      background-color: #fffdf5;
-      border: 2px solid #f2c879;
-      border-radius: 15px;
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 25px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    .titulo {
+      background: linear-gradient(to right, #d946ef, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
+    .boton-pastel {
+      background: linear-gradient(to right, #f9a8d4, #d8b4fe);
+      color: #5b1e63;
     }
 
-    input[type="text"], select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #d1b77b;
-      border-radius: 8px;
-      margin-top: 5px;
-      background-color: #fffdf9;
-    }
-
-    input[type="submit"] {
-      background-color: #f4a300;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      margin-top: 20px;
-      border-radius: 25px;
-      font-size: 1em;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      width: 100%;
-    }
-
-    input[type="submit"]:hover {
-      background-color: #ffc14d;
-    }
-
-    #resultado {
-      text-align: center;
-      font-size: 1.2em;
-      margin-top: 25px;
-      color: #a86400;
-    }
-
-    .descripcion {
-      font-size: 0.85em;
-      color: #6c4d23;
-      margin-bottom: 10px;
+    .boton-pastel:hover {
+      background: linear-gradient(to right, #fbcfe8, #e9d5ff);
+      transform: scale(1.03);
     }
   </style>
-  <script>
-    function predecirPrecio(event) {
-      event.preventDefault();
-      const datos = {
-        Purity: document.getElementById('Purity').value,
-        pH: document.getElementById('pH').value,
-        Pollen_analysis: document.getElementById('Pollen_analysis').value,
-        Density: document.getElementById('Density').value,
-        CS: document.getElementById('CS').value,
-        WC: document.getElementById('WC').value
-      };
+</head>
+<body class="bg-cover bg-center bg-no-repeat min-h-screen p-6 flex flex-col items-center justify-start fondo-difuminado" style="background-image: url('/static/titanic.jpg');">
 
-      const body = new URLSearchParams(datos).toString();
+  <h1 class="text-4xl font-extrabold text-center mt-4 mb-6 titulo drop-shadow-sm">
+    Predicción de Supervivencia en el Titanic
+  </h1>
+
+  <form id="formulario" onsubmit="predictSurvival(event)" class="glass-card text-gray-800 w-full max-w-2xl p-8 space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div>
+        <label for="Pclass" class="block font-medium mb-1">Clase (1-3):</label>
+        <input type="number" name="Pclass" id="Pclass" required min="1" max="3" placeholder="Ej. 2"
+          class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-pink-300" />
+      </div>
+      <div>
+        <label for="Sex" class="block font-medium mb-1">Sexo:</label>
+        <select name="Sex" id="Sex" required
+          class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white focus:ring-2 focus:ring-pink-300">
+          <option value="" disabled selected>Selecciona</option>
+        </select>
+      </div>
+      <div>
+        <label for="Age" class="block font-medium mb-1">Edad:</label>
+        <input type="number" name="Age" id="Age" required step="0.1" min="0" max="100" placeholder="Ej. 22.5"
+          class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-pink-300" />
+      </div>
+      <div>
+        <label for="SibSp" class="block font-medium mb-1">Hermanos/Cónyuges:</label>
+        <input type="number" name="SibSp" id="SibSp" required min="0" max="10" placeholder="Ej. 1"
+          class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-pink-300" />
+      </div>
+      <div>
+        <label for="Parch" class="block font-medium mb-1">Padres/Hijos:</label>
+        <input type="number" name="Parch" id="Parch" required min="0" max="10" placeholder="Ej. 0"
+          class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-pink-300" />
+      </div>
+      <div>
+        <label for="Ticket" class="block font-medium mb-1">Ticket:</label>
+        <input type="text" name="Ticket" id="Ticket" list="ticketOptions" required placeholder="Ej. A/5 21171"
+          class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-pink-300" />
+        <datalist id="ticketOptions"></datalist>
+      </div>
+      <div>
+        <label for="Fare" class="block font-medium mb-1">Tarifa:</label>
+        <input type="number" name="Fare" id="Fare" step="0.01" required min="0" placeholder="Ej. 72.5"
+          class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-pink-300" />
+      </div>
+      <div>
+        <label for="Cabin" class="block font-medium mb-1">Cabina:</label>
+        <input type="text" name="Cabin" id="Cabin" list="cabinOptions" required placeholder="Ej. C85"
+          class="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-pink-300" />
+        <datalist id="cabinOptions"></datalist>
+      </div>
+      <div class="sm:col-span-2">
+        <label for="Embarked" class="block font-medium mb-1">Puerto de embarque:</label>
+        <select name="Embarked" id="Embarked" required
+          class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white focus:ring-2 focus:ring-pink-300">
+          <option value="" disabled selected>Selecciona un puerto</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="pt-4">
+      <input type="submit" value="Predecir"
+        class="w-full py-3 rounded-lg font-bold uppercase tracking-wide boton-pastel transition-all duration-200 cursor-pointer" />
+    </div>
+  </form>
+
+  <script>
+    function loadOptions() {
+      fetch('/get_categories')
+        .then(res => res.json())
+        .then(data => {
+          const sex = document.getElementById('Sex');
+          sex.innerHTML = '<option value="" disabled selected>Selecciona un sexo</option>';
+          data.Sex.forEach(s => {
+            const o = document.createElement('option');
+            o.value = s;
+            o.textContent = s === 'male' ? 'Hombre' : 'Mujer';
+            sex.appendChild(o);
+          });
+
+          const embarked = document.getElementById('Embarked');
+          embarked.innerHTML = '<option value="" disabled selected>Selecciona un puerto</option>';
+          data.Embarked.forEach(e => {
+            const o = document.createElement('option');
+            o.value = e;
+            o.textContent = e;
+            embarked.appendChild(o);
+          });
+
+          const ticket = document.getElementById('ticketOptions');
+          ticket.innerHTML = '';
+          data.Ticket.forEach(t => {
+            const o = document.createElement('option');
+            o.value = t;
+            ticket.appendChild(o);
+          });
+
+          const cabin = document.getElementById('cabinOptions');
+          cabin.innerHTML = '';
+          data.Cabin.forEach(c => {
+            const o = document.createElement('option');
+            o.value = c;
+            cabin.appendChild(o);
+          });
+        });
+    }
+
+    window.onload = loadOptions;
+
+    function predictSurvival(event) {
+      event.preventDefault();
+      const formData = new FormData(document.getElementById('formulario'));
 
       fetch('/predict', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body,
+        body: formData
       })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('resultado').innerText = data.error
-          ? 'Error: ' + data.error
-          : 'El precio estimado de la miel es: $' + data.precio;
-      })
-      .catch(error => {
-        document.getElementById('resultado').innerText = 'Error en la solicitud.';
-        console.error('Error:', error);
-      });
+        .then(res => res.json())
+        .then(data => {
+          const existing = document.querySelector('.result-container');
+          if (existing) existing.remove();
+
+          const div = document.createElement('div');
+          div.className = `result-container mt-6 max-w-xl w-full text-center p-4 rounded-lg shadow-lg ${
+            data.error ? 'bg-red-100 border-l-4 border-red-400' : 'bg-pink-100 border-l-4 border-pink-400'
+          }`;
+
+          div.innerHTML = `
+            <h2 class="text-xl font-bold text-gray-800 mb-2">${data.error ? 'Error' : 'Resultado de la Predicción'}</h2>
+            <p class="text-gray-700 font-medium">${data.error ? 'Error: ' + data.error : 'Resultado: ' + data.result}</p>
+          `;
+
+          document.body.appendChild(div);
+        })
+        .catch(error => {
+          alert('Error en la solicitud');
+          console.error(error);
+        });
     }
   </script>
-</head>
-<body>
-
-  <h1>Predicción de Precio de Miel</h1>
-
-  <form id="formulario" onsubmit="predecirPrecio(event)">
-    <label for="Purity">Pureza:</label>
-    <input type="text" id="Purity" name="Purity">
-    <div class="descripcion">Oscila entre 0.01 y 1.00. Representa la calidad de la muestra.</div>
-
-    <label for="pH">pH:</label>
-    <input type="text" id="pH" name="pH">
-    <div class="descripcion">Nivel de acidez. Oscila entre 2.5 y 7.5.</div>
-
-    <label for="Pollen_analysis">Análisis de polen:</label>
-    <select id="Pollen_analysis" name="Pollen_analysis" required>
-  <option value="" disabled selected>Selecciona una flor</option>
-  <option value="Acacia">Acacia</option>
-  <option value="Alfalfa">Alfalfa</option>
-  <option value="Avocado">Avocado</option>
-  <option value="Blueberry">Blueberry</option>
-  <option value="Borage">Borage</option>
-  <option value="Buckwheat">Buckwheat</option>
-  <option value="Chestnut">Chestnut</option>
-  <option value="Clover">Clover</option>
-  <option value="Eucalyptus">Eucalyptus</option>
-  <option value="Heather">Heather</option>
-  <option value="Lavender">Lavender</option>
-  <option value="Manuka">Manuka</option>
-  <option value="Orange Blossom">Orange Blossom</option>
-  <option value="Rosemary">Rosemary</option>
-  <option value="Sage">Sage</option>
-  <option value="Sunflower">Sunflower</option>
-  <option value="Thyme">Thyme</option>
-  <option value="Tupelo">Tupelo</option>
-  <option value="Wildflower">Wildflower</option>
-</select>
-    <div class="descripcion">Origen floral de la miel.</div>
-
-    <label for="Density">Densidad:</label>
-    <input type="text" id="Density" name="Density">
-    <div class="descripcion">Oscila entre 1.21 y 1.86 g/cm³.</div>
-
-    <label for="CS">Puntuación de color (CS):</label>
-    <input type="text" id="CS" name="CS">
-    <div class="descripcion">Rango de 1.0 (claro) a 10.0 (oscuro).</div>
-
-    <label for="WC">Contenido de agua (WC):</label>
-    <input type="text" id="WC" name="WC">
-    <div class="descripcion">Oscila entre 12.0% y 25.0%.</div>
-
-    <input type="submit" value="Predecir Precio">
-  </form>
-
-  <p id="resultado"></p>
-
 </body>
 </html>
